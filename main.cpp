@@ -1,6 +1,8 @@
 #include <iostream>
 #include <chrono>
+#include <vector>
 using namespace std;
+using namespace std::chrono;
 
 int main() {
     
