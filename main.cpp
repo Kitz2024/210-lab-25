@@ -1,8 +1,9 @@
+//Kit Pollinger
+// 210 - lab - 25
+
 #include <iostream>
 #include <chrono>
-#include <vector>
 using namespace std;
-using namespace std::chrono;
 
 int main() {
     
