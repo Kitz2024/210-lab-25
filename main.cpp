@@ -1,3 +1,6 @@
+//Kit Pollinger
+// 210 - Lab - 25 | Data Structure Race
+
 #include <iostream>
 #include <chrono>
 #include <vector>
@@ -5,7 +8,7 @@
 #include <set>
 #include <fstream>
 #include <string>
-#include <algorithm>  // For sorting vectors
+#include <algorithm>
 
 using namespace std;
 using namespace std::chrono;
@@ -15,7 +18,7 @@ template <typename Container>
 void readData(Container& container, ifstream& inFile) {
     string data;
     while (getline(inFile, data)) {
-        container.push_back(data);  // Use push_back for vector
+        container.push_back(data);
     }
 }
 
@@ -40,7 +43,7 @@ void readData(set<string>& container, ifstream& inFile) {
 // reset and re-read data from the file for each container
 template <typename Container>
 milliseconds timeRead(Container& container, const string& filename) {
-    container.clear();  // Clear the container before reading
+    container.clear();
     ifstream inFile("C:\\210-Coding\\projects\\210-lab-25-starter\\codes.txt");
     if (!inFile.is_open()) {
         cout << "Error opening data file!" << endl;
@@ -58,7 +61,7 @@ milliseconds timeRead(Container& container, const string& filename) {
 template <typename Container>
 milliseconds timeSort(Container& container) {
     auto start = high_resolution_clock::now();
-    container.sort();  // List has built-in sort()
+    container.sort();
     auto end = high_resolution_clock::now();
     return duration_cast<milliseconds>(end - start);
 }
@@ -77,17 +80,17 @@ template <typename Container>
 milliseconds timeInsert(Container& container) {
     auto start = high_resolution_clock::now();
     auto it = container.begin();
-    advance(it, container.size() / 2);  // Insert in the middle
+    advance(it, container.size() / 2);
     container.insert(it, "TESTCODE");
     auto end = high_resolution_clock::now();
     return duration_cast<milliseconds>(end - start);
 }
 
-// set insertion (no need for an iterator)
+// set insertion 
 template <>
 milliseconds timeInsert(set<string>& container) {
     auto start = high_resolution_clock::now();
-    container.insert("TESTCODE");
+    container.insert("TESTCODE"); // Single insertion for consistency
     auto end = high_resolution_clock::now();
     return duration_cast<milliseconds>(end - start);
 }
@@ -97,16 +100,28 @@ template <typename Container>
 milliseconds timeDelete(Container& container) {
     auto start = high_resolution_clock::now();
     auto it = container.begin();
-    advance(it, container.size() / 2);  // Delete from the middle
+    advance(it, container.size() / 2);
     container.erase(it);
     auto end = high_resolution_clock::now();
     return duration_cast<milliseconds>(end - start);
 }
 
-int main() {
-    string filename = "C:\\210-Coding\\projects\\210-lab-25-starter\\codes.txt";  
+// Deleting middle-ish element of set
+template <>
+milliseconds timeDelete(set<string>& container) {
+    auto start = high_resolution_clock::now();
+    auto it = container.begin();
+    advance(it, container.size() / 2); // Move iterator to middle element
+    container.erase(it); // Erase the middle element
+    auto end = high_resolution_clock::now();
+    return duration_cast<milliseconds>(end - start);
+}
 
-    // Create  vector, list, and set
+
+int main() {
+    string filename = "C:\\210-Coding\\projects\\210-lab-25-starter\\codes.txt";
+
+    // Create  vector, list, and set
     vector<string> vec;
     list<string> lst;
     set<string> st;
@@ -126,9 +141,9 @@ int main() {
     // Race 2: Sorting vector and list
     auto vecSortTime = timeSort(vec);
     auto lstSortTime = timeSort(lst);
-    milliseconds setSortTime(-1);  // Sets are inherently sorted
+    milliseconds setSortTime(-1); // Set is already sorted
 
-    // Race 3: Inserting TESTCODE
+    // Race 3: Inserting Value "TESTCODE"
     auto vecInsertTime = timeInsert(vec);
     auto lstInsertTime = timeInsert(lst);
     auto stInsertTime = timeInsert(st);
@@ -140,17 +155,17 @@ int main() {
 
     // Print results
     cout << "Operation\tVector\tList\tSet" << endl;
-    cout << "Read\t\t" << vecReadTime.count() 
-         << "\t" << lstReadTime.count() 
+    cout << "Read\t\t" << vecReadTime.count()
+         << "\t" << lstReadTime.count()
          << "\t" << stReadTime.count() << endl;
-    cout << "Sort\t\t" << vecSortTime.count() 
-         << "\t" << lstSortTime.count() 
+    cout << "Sort\t\t" << vecSortTime.count()
+         << "\t" << lstSortTime.count()
          << "\t" << setSortTime.count() << endl;
-    cout << "Insert\t\t" << vecInsertTime.count() 
-         << "\t" << lstInsertTime.count() 
+    cout << "Insert\t\t" << vecInsertTime.count()
+         << "\t" << lstInsertTime.count()
          << "\t" << stInsertTime.count() << endl;
-    cout << "Delete\t\t" << vecDeleteTime.count() 
-         << "\t" << lstDeleteTime.count() 
+    cout << "Delete\t\t" << vecDeleteTime.count()
+         << "\t" << lstDeleteTime.count()
          << "\t" << stDeleteTime.count() << endl;
 
     return 0;
